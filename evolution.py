@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 class Evolution:
     def __init__(self, crossover_ratio, mutation_ratio, crossover, mutation,
                  fitness_func, selection_func, population_size,
@@ -26,7 +27,7 @@ class Evolution:
         self.initialize_population()
 
     def initialize_population(self):
-        self.population = np.random.uniform(size=(self.population_size,
+        self.population = np.random.randint(low=0, high=10, size=(self.population_size,
                                                   self.individual_size))
 
     def fit(self, iterations=20):
@@ -36,13 +37,14 @@ class Evolution:
             self.match_parents()
             for i in range(0, self.population_size, 2):
                 if np.random.uniform(size=1) <= self.crossover_ratio:
-                    parentA, parentB = self.parents[i], self.parents[i+1]
+                    parentA, parentB = self.parents[i], self.parents[i + 1]
                     child = self.crossover(parentA, parentB)
                     self.new_population.append(child)
-                    
+
             for i in range(len(self.new_population)):
                 if np.random.uniform(size=1) <= self.mutation_ratio:
-                    self.new_population[i] = self.mutation(self.new_population[i])
+                    self.new_population[i] = self.mutation(
+                        self.new_population[i])
             fitness_scores = self.evaluate()
             self.print_results(fitness_scores)
             self.selection(fitness_scores)

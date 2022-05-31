@@ -10,3 +10,7 @@ def one_point_crossover(parentA, parentB):
     child[split_at:] = parentB[split_at:]
 
     return child
+
+
+def mean_crossover(parentA, parentB):
+    return (parentA + parentB) // 2

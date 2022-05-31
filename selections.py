@@ -1,5 +1,5 @@
 import numpy as np
 
 
-def selection(optimum, individual):
-    return np.linalg.norm(optimum - individual)
+def elite_selection(scores, n):
+    return np.argpartition(scores, -n)[:n]
