@@ -25,12 +25,14 @@ class Evolution:
         self.individual_size = individual_size
         self.population = None
         self.initialize_population()
+        self.name = f'{crossover.__name__}&{mutation.__name__}&population={population_size}'
 
     def initialize_population(self):
-        self.population = np.random.randint(low=0, high=10, size=(self.population_size,
+        self.population = np.random.randint(low=0, high=15, size=(self.population_size,
                                                   self.individual_size))
 
     def fit(self, iterations=20):
+        self.name += f'&iterations={iterations}'
         t = 0
         while t < iterations:
             self.new_population = list(self.population)
@@ -46,21 +48,22 @@ class Evolution:
                     self.new_population[i] = self.mutation(
                         self.new_population[i])
             fitness_scores = self.evaluate()
-            self.print_results(fitness_scores)
+            self.print_results(fitness_scores, t)
             self.selection(fitness_scores)
             self.print_evaluate_new_generation()
             self.save_to_history(t)
             t += 1
+        self.best_individual = self.new_population[np.argmax(fitness_scores)]
 
     def save_to_history(self, iteration):
         scores = np.apply_along_axis(self.fitness_func, 1, self.population)
         self.history['mean_score'].append(np.mean(scores))
-        self.history['best_score'].append(np.min(scores))
+        self.history['best_score'].append(np.max(scores))
         self.history['iteration'].append(iteration)
 
-    def save_history_to_csv(self, filename):
+    def save_history_to_csv(self):
         df = pd.DataFrame(self.history)
-        df.to_csv(f'history\\{filename}.csv')
+        df.to_csv(f'history\\{self.name}.csv')
 
     def visualise(self):
         plt.figure(figsize=[10, 6])
@@ -70,11 +73,11 @@ class Evolution:
         plt.subplot(1, 2, 2)
         plt.plot(self.history['iteration'], self.history['best_score'])
         plt.title('Best score from population over time')
-        plt.show()
+        plt.savefig(f'plots\\{self.name}.png')
 
-    def print_results(self, scores):
-        print(f'Best score is {np.min(scores)} for individual '
-              f'{self.new_population[np.argmin(scores)]}')
+    def print_results(self, scores, generation_num):
+        print(f'Generation {generation_num} best score is {np.max(scores)} for individual '
+              f'{self.new_population[np.argmax(scores)]}')
 
     def print_evaluate_new_generation(self):
         scores = np.apply_along_axis(self.fitness_func, 1, self.population)

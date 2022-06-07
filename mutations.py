@@ -7,5 +7,6 @@ def gaussian_mutation(chromosome):
 
 def int_mutation(chromosome):
 
-    vector_to_add = np.random.randint(0, 10, chromosome.shape[0])
-    return vector_to_add + chromosome
+    vector_to_add = np.random.randint(-5, 5, chromosome.shape[0])
+    mutated = vector_to_add + chromosome
+    return np.where(mutated < 0, 0, mutated)
